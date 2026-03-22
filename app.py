@@ -70,20 +70,25 @@ def predict(img):
 # -------------------------------
 if canvas_result.image_data is not None:
     img = canvas_result.image_data.astype("uint8")
-    img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+    
+    # Check if user actually drew something
+    if np.sum(img) == 0:
+        st.warning("✏️ Please draw something first!")
+    else:
+        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
 
-    gray, edges, result = process_image(img)
+        gray, edges, result = process_image(img)
 
-    label, confidence = predict(gray)
+        label, confidence = predict(gray)
 
-    st.subheader("🧠 Prediction")
-    st.success(f"👉 {label}")
-    st.info(f"Confidence: {confidence:.2f}")
+        st.subheader("🧠 Prediction")
+        st.success(f"👉 {label}")
+        st.info(f"Confidence: {confidence:.2f}")
 
-    col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-    with col1:
-        st.image(edges, caption="Sketch (Edges)")
+        with col1:
+            st.image(edges, caption="Sketch (Edges)")
 
-    with col2:
-        st.image(result, caption="Stylized Image")
+        with col2:
+            st.image(result, caption="Stylized Image")
